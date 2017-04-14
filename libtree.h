@@ -21,8 +21,12 @@
 namespace Libtree {
   struct Tree {
     int value;
-    Tree* left;
-    Tree* right;
+    int key; // wat
+    int weight; // Смещение влево-вправо относительно корневого элемента (по горизонтали)
+    int depth; // расстояние в дугах от корня до узла
+    int height; // расстояние в дугах от узла до наиболее удаленного потомка
+    Tree* left; // left child
+    Tree* right; // right child
 
     Tree() {}
 
@@ -32,11 +36,53 @@ namespace Libtree {
       left = l;
       right = r;
     }
+
+    Tree(int v, int k, int w, int d, int h, Tree* l, Tree* r) {
+      value = v;
+      key = k;
+      weight = w;
+      depth = d;
+      height = h;
+      left = l;
+      right = r;
+    }
   };
 
-  void showTree(Tree* tree);
+
   void showItem(Tree* tree);
+
+  void preOrderLeft(Tree* tree);   // Root -> left  -> right
+  void preOrderRight(Tree* tree);  // Root -> right -> left
+  void postOrderLeft(Tree* tree);  // left  -> right -> Root
+  void postOrderRight(Tree* tree); // right -> left  -> Root
+  void inOrderLeft(Tree* tree);  // left  -> Root -> right
+  void inOrderRight(Tree* tree); // right -> Root -> left
   void printTree(Tree* root, int offset);
+
+  // FrontOrderLeftPosition
+  // CopyFullTree
+  // PrintLeftTree
+  // .PrintLevel
+
+  // methods
+  int getNodeHeight(Tree* tree);
+  int setNodeHeight(Tree* tree);
+
+  Tree* insertKeyToSubtree(Tree* root, int key);
+  void updateTreeNodes(Tree* node, int depth, int weight);
+
+  Tree* findMinNodeByKey(Tree* node); // ???
+  Tree* findMaxNodeByKey(Tree* node); // ???
+
+  Tree* removeMinNode(Tree* node); // remove list
+  Tree* removeMaxNode(Tree* node); // remove list
+
+
+
+  Tree* removeNodeByKeyRight(Tree* node, int key);
+  Tree* removeNodeByKeyLeft(Tree* node, int key);
+
+  int getChildsAmount(Tree* node);
 
   // building Tree by array.
   Tree* buildTree(Tree* tree, int value);

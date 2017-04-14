@@ -25,11 +25,16 @@ int main() {
     cin >> value;
 
     // set tree
-    tree = Libtree::buildTree(tree, value);
+    tree = Libtree::insertKeyToSubtree(tree, value);
 
     cout << "Can you add a new item to the Tree? (y/n) ";
     cin >> answer;
   } while (answer != 'n');
+
+  Libtree::printTree(tree, 1);
+
+  Libtree::insertKeyToSubtree(tree, value);
+  std::cout << '\n' << '\n';
 
   Libtree::printTree(tree, 1);
   int stop;
