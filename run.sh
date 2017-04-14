@@ -1,10 +1,24 @@
-# alternate compile
-# g++ -o task1 task1.cpp
-# ./task1
 
-# compile and start program instruction (for mac or linux)
-# exec by
-# $ sh c.sh
+#
+# Welcome!
+# Please, compile and start program instruction (for mac or linux).
+# exec by terminal command:
+# sh run.sh
+#
 
-c++ task2.cpp -o task2 -std=c++11 -stdlib=libc++
-./task2
+# if you experienced user, you can use another compilation.
+# for example:
+# c++ test.cpp -o test -std=c++11 -stdlib=libc++
+
+
+# compile sources to object files
+g++ -c libtree.cpp -o libtree.o
+g++ -c test.cpp -o test.o
+
+# create shared library (.so)
+g++ -shared -fPIC -o libtree.so libtree.o
+
+# compile test cpp file.
+g++ test.o libtree.o -o test
+
+# ./test
