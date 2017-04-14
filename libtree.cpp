@@ -84,7 +84,7 @@ namespace Libtree {
       printTree(root->left, offset + 1);
 
       for (i = 1; i < offset; i++) std::cout << "--->";
-      printf ("%i   \n", root->value);
+      printf ("%i:%i   \n", root->value, root->key);
 
       printTree(root->right, offset + 1);
     }
@@ -92,18 +92,20 @@ namespace Libtree {
 
 
   // build fully balanced tree
-  // @height - требуемая высота дерева?
   void buildBalancedTree(Tree* tree, int height) {
     Tree* newLeftNode;
     Tree* newRightNode;
-    newLeftNode  = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
-    newRightNode = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
 
-    tree->left  = newLeftNode;
-    tree->right = newRightNode;
+    if (height > 0) {
+      newLeftNode  = new Tree(height, height, 0, 0, 0, nullptr, nullptr);
+      newRightNode = new Tree(height, height, 0, 0, 0, nullptr, nullptr);
 
-    buildBalancedTree(tree->left,  height - 1);
-    buildBalancedTree(tree->right, height - 1);
+      tree->left  = newLeftNode;
+      tree->right = newRightNode;
+
+      buildBalancedTree(tree->left,  height - 1);
+      buildBalancedTree(tree->right, height - 1);
+    }
   }
 
 
@@ -117,7 +119,7 @@ namespace Libtree {
 
 
   int setNodeHeight(Tree* tree) {
-    int left, right;
+    int left = 0, right = 0;
 
     if (tree != nullptr) {
       left = setNodeHeight(tree->left);
@@ -143,6 +145,7 @@ namespace Libtree {
       else
         root->right = insertKeyToSubtree(root->right, key);
     }
+
     updateTreeNodes(root, 0, 0);
     return root;
   }
@@ -285,4 +288,93 @@ namespace Libtree {
 
     return tree;
   }
+
+
+
+  // 29) Вспомогательная Функция (по одной ветви) вычисления суммы конечных элементов пути максимальной длины,
+  // проходящей через заданный узел
+
+  int getMaxPath(Tree* root) {
+    if ((root->left == nullptr) && (root->right == nullptr)) return root->key;
+    if ((root->left != nullptr) && (root->right == nullptr)) return getMaxPath(root->left);
+    if ((root->left == nullptr) && (root->right != nullptr)) return getMaxPath(root->right);
+    if ((root->left != nullptr) && (root->right != nullptr)) {
+      // check length of a subtrees
+      if ((root->left->height) >= (root->right->height))
+        return getMaxPath(root->left);
+      else
+        return getMaxPath(root->right);
+    }
+  }
+
+  // Основная Функция (по обеим ветвям) вычисления суммы конечных элементов пути
+  // максимальной длины, проходящей через заданный узел
+  // складывает два листа лол
+  int getMaxPathAvg(Tree* root) {
+    int maxLength = 0;
+    if (root != nullptr) {
+      if (root->left != nullptr)
+        maxLength += getMaxPath(root->left);
+      else
+        maxLength += root->key;
+
+      if (root->right != nullptr)
+        maxLength += getMaxPath(root->right);
+      else
+        maxLength += root->key;
+    }
+    return maxLength;
+  }
+
+
+  // Функция определения максимальной длины пути, проходящего через заданный узел
+  int getMaxPathFromNode(Tree* root) {
+    int maxLength = 0;
+
+    if (root != nullptr) {
+      if (root->left  != nullptr) maxLength += root->left->height  + 1;
+      if (root->right != nullptr) maxLength += root->right->height + 1;
+    }
+    return maxLength;
+  }
+
+
+
+
+
+
+  Tree* findMaxPathRoot(Tree* root) {
+    int maxLength = 0;
+    int rootListSum = 10000;
+    Tree* resultRoot = nullptr;
+
+    resultRoot = compareNodesMaxPath(root, maxLength, rootListSum, resultRoot);
+    return resultRoot;
+  }
+
+  Tree* compareNodesMaxPath(Tree* root, int maxLength, int rootListSum, Tree* resultRoot) {
+    int tmpLength = 0;
+    if (root != nullptr) {
+      tmpLength = getMaxPathFromNode(root);
+
+      if ((tmpLength > maxLength) || ((tmpLength == maxLength) && (getMaxPathAvg(root) < rootListSum))) {
+        resultRoot = root;
+        maxLength = tmpLength;
+        rootListSum = getMaxPathAvg(root);
+      }
+
+      compareNodesMaxPath(root->left,  maxLength, rootListSum, resultRoot);
+      compareNodesMaxPath(root->right, maxLength, rootListSum, resultRoot);
+
+      return resultRoot;
+    }
+  }
+
+
+
+
+
+
+
+
 }

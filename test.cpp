@@ -23,20 +23,27 @@ int main() {
   do {
     cout << "Please write item's value: ";
     cin >> value;
-
     // set tree
-    tree = Libtree::insertKeyToSubtree(tree, value);
+    tree = insertKeyToSubtree(tree, value);
 
     cout << "Can you add a new item to the Tree? (y/n) ";
     cin >> answer;
   } while (answer != 'n');
 
-  Libtree::printTree(tree, 1);
+  // printTree(tree, 1);
 
-  Libtree::insertKeyToSubtree(tree, value);
+  // insertKeyToSubtree(tree, value);
   std::cout << '\n' << '\n';
+  buildBalancedTree(tree, 2);
+  printTree(tree, 1);
 
-  Libtree::printTree(tree, 1);
+  tree = findMaxPathRoot(tree);
+
+  std::cout << tree->key << '\n';
+  std::cout << tree->value << '\n';
+  std::cout << tree->height << '\n';
+  std::cout << tree->weight << '\n';
+
   int stop;
   cin >> stop;
   return 0;

@@ -55,8 +55,8 @@ namespace Libtree {
   void preOrderRight(Tree* tree);  // Root -> right -> left
   void postOrderLeft(Tree* tree);  // left  -> right -> Root
   void postOrderRight(Tree* tree); // right -> left  -> Root
-  void inOrderLeft(Tree* tree);  // left  -> Root -> right
-  void inOrderRight(Tree* tree); // right -> Root -> left
+  void inOrderLeft(Tree* tree);    // left  -> Root -> right
+  void inOrderRight(Tree* tree);   // right -> Root -> left
   void printTree(Tree* root, int offset);
 
   // FrontOrderLeftPosition
@@ -77,8 +77,6 @@ namespace Libtree {
   Tree* removeMinNode(Tree* node); // remove list
   Tree* removeMaxNode(Tree* node); // remove list
 
-
-
   Tree* removeNodeByKeyRight(Tree* node, int key);
   Tree* removeNodeByKeyLeft(Tree* node, int key);
 
@@ -86,4 +84,13 @@ namespace Libtree {
 
   // building Tree by array.
   Tree* buildTree(Tree* tree, int value);
+  // building balanced tree with program filling.
+  void buildBalancedTree(Tree* tree, int height);
+
+  int getMaxPathAvg(Tree* root);
+  int getMaxPathFromNode(Tree* root);
+
+  Tree* compareNodesMaxPath(Tree* root, int maxLength, int rootListSum, Tree* resultRoot);
+  Tree* findMaxPathRoot(Tree* root);
+
 }
