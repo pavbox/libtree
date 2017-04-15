@@ -13,12 +13,15 @@
 
 # compile sources to object files
 g++ -c libtree.cpp -o libtree.o
-g++ -c test.cpp -o test.o
+# g++ -c test.cpp -o test.o
+g++ -c srm.cpp -o srm.o
 
 # create shared library (.so)
 g++ -shared -fPIC -o libtree.so libtree.o
 
 # compile test cpp file.
-g++ test.o libtree.o -o test
+# g++ test.o libtree.o -o test
+g++ srm.o libtree.o -o srm
 
 # ./test
+./srm

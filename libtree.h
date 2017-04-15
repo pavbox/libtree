@@ -93,4 +93,8 @@ namespace Libtree {
   Tree* compareNodesMaxPath(Tree* root, int maxLength, int rootListSum, Tree* resultRoot);
   Tree* findMaxPathRoot(Tree* root);
 
+  void printMaxPathLeft(Tree* root);
+  void printMaxPathRight(Tree* root);
+  void printMaxPathNodes(Tree* root);
+
 }

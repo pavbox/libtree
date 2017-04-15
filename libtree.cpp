@@ -131,7 +131,7 @@ namespace Libtree {
         return right + 1;
       }
     } else {
-      return -1;
+      return 0;
     }
   }
 
@@ -375,6 +375,52 @@ namespace Libtree {
 
 
 
+  // 33) Вспомогательная процедура (по левой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+  void printMaxPathLeft(Tree* root) {
+    if ((root->left == nullptr) && (root->right == nullptr)) {
+      std::cout << root->key << ' ';
+    } else {
+      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathLeft(root->left);
+      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathLeft(root->right);
+      if ((root->left != nullptr) && (root->right != nullptr)) {
+        if (root->left->height >= root->right->height)
+          printMaxPathLeft(root->left);
+        else
+          printMaxPathLeft(root->right);
+      }
 
+      std::cout << root->key << ' ';
+    }
+  }
+
+
+  // 34) Вспомогательная процедура (по правой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+  void printMaxPathRight(Tree* root) {
+    if ((root->left == nullptr) && (root->right == nullptr)) {
+      std::cout << root->key << ' ';
+    } else {
+      std::cout << root->key << ' ';
+      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathRight(root->left);
+      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathRight(root->right);
+      if ((root->left != nullptr) && (root->right != nullptr)) {
+        if (root->left->height >= root->right->height)
+          printMaxPathRight(root->left);
+        else
+          printMaxPathRight(root->right);
+      }
+
+
+    }
+  }
+
+  // 35) Основная процедура(по обеим ветвям) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+  void printMaxPathNodes(Tree* root) {
+    if (root != nullptr) {
+      if (root->left != nullptr) printMaxPathLeft(root->left);
+      std::cout << root->key << ' ';
+      if (root->right != nullptr) printMaxPathRight(root->right);
+    }
+    std::cout << '\n';
+  }
 
 }
