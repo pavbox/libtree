@@ -84,7 +84,7 @@ namespace Libtree {
       printTree(root->left, offset + 1);
 
       for (i = 1; i < offset; i++) std::cout << "--->";
-      printf ("%i:%i   \n", root->value, root->key);
+      printf ("%i   \n", root->key);
 
       printTree(root->right, offset + 1);
     }
@@ -422,5 +422,300 @@ namespace Libtree {
     }
     std::cout << '\n';
   }
+
+
+
+
+  /**
+   *
+  */
+
+  // 13) ОСНОВНАЯ Функция определения МИНИМАЛЬНОЙ длины пути, проходящего через заданный узел
+  int getMinPathLength(Tree* root) {
+    int minLength = 0;
+
+    if (root != nullptr) {
+      if (root->left  != nullptr) minLength += minLengthPathFromNode(root->left)  + 1;
+      if (root->right != nullptr) minLength += minLengthPathFromNode(root->right) + 1;
+    }
+
+    return minLength;
+  }
+
+
+
+  // 14) ВСПОМОГАТЕЛЬНАЯ Функция определения МИНИМАЛЬНОЙ длины пути, проходящего через заданный узел
+  int minLengthPathFromNode(Tree* root) {
+    int minLength = 0;
+    if (root != nullptr) {
+      if ((root->left != nullptr) && (root->right != nullptr)) {
+        if (root->left->height < root->right->height)
+        minLength += minLengthPathFromNode(root->left)  + 1;
+        else
+        minLength += minLengthPathFromNode(root->right) + 1;
+      }
+
+      if ((root->left != nullptr) && (root->right == nullptr)) minLength += minLengthPathFromNode(root->left)  + 1;
+      if ((root->left == nullptr) && (root->right != nullptr)) minLength += minLengthPathFromNode(root->right) + 1;
+    }
+
+    return minLength;
+  }
+
+
+
+  // maximum
+
+
+  // This function returns overall maximum path sum in 'res'
+  // And returns max path sum going through root.
+
+  Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
+  int getMaxPathUtil(Tree* root, int &res) {
+    //Base Case
+    if (root == NULL)
+      return 0;
+
+    // leftChildSum and rightChildSum store maximum path sum going through left and
+    // right child of root respectively
+    int leftChildSum  = getMaxPathUtil(root->left,  res);
+    int rightChildSum = getMaxPathUtil(root->right, res);
+
+    // Max path for parent call of root. This path must
+    // include at-most one child of root
+    int max_single = std::max(std::max(leftChildSum, rightChildSum) + root->key, root->key);
+
+    // Max Top represents the sum when the Node under
+    // consideration is the root of the maxsum path and no
+    // ancestors of root are there in max sum path
+    int max_top = std::max(max_single, leftChildSum + rightChildSum + root->key);
+
+    res = std::max(res, max_top); // Store the Maximum Result.
+    // if ((max(l, r) + root->key) > root->key)
+    if (res <= max_top) {
+  	    subtreeRoot = root;
+        std::cout << "path root changed to: " << subtreeRoot->key << '\n';
+  	}
+    return max_single;
+  }
+
+
+  // Returns maximum path sum in tree with given root
+  Tree* getMaxSumAndRoot(Tree* root, int &res) {
+    // Initialize result
+    res = INT_MIN;
+
+    // Compute and return result
+    getMaxPathUtil(root, res);
+    // return res;
+    return subtreeRoot;
+  }
+
+  /* Given a non-empty binary search tree, return the node with minimum
+   key value found in that tree. Note that the entire tree does not
+   need to be searched. */
+struct Tree* minValueNode(struct Tree* node)
+{
+    struct Tree* current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+  /* Given a binary search tree and a key, this function deletes the key
+   and returns the new root */
+  struct Tree* deleteNode(struct Tree* root, int key)
+  {
+      // base case
+      if (root == NULL) return root;
+
+
+      // If the key to be deleted is smaller than the root's key,
+      // then it lies in left subtree
+      if (key < root->key)
+          root->left = deleteNode(root->left, key);
+
+      // If the key to be deleted is greater than the root's key,
+      // then it lies in right subtree
+      else if (key > root->key)
+          root->right = deleteNode(root->right, key);
+
+      // if key is same as root's key, then This is the node
+      // to be deleted
+      else {
+          // node with only one child or no child
+          if (root->left == NULL)
+          {
+              struct Tree* temp = root->right;
+              std::cout << "delete: " << root->key << '\n';
+              free(root);
+              return temp;
+          }
+          else if (root->right == NULL)
+          {
+              struct Tree* temp = root->left;
+              std::cout << "delete: " << root->key << '\n';
+              free(root);
+              return temp;
+          }
+
+          // node with two children: Get the inorder successor (smallest
+          // in the right subtree)
+          struct Tree* temp = minValueNode(root->right);
+
+          // Copy the inorder successor's content to this node
+          root->key = temp->key;
+
+          // Delete the inorder successor
+          root->right = deleteNode(root->right, temp->key);
+      }
+      return root;
+  }
+
+
+  // A utility function to do inorder traversal of BST
+  void inorder(struct Tree* root)
+  {
+      if (root != NULL)
+      {
+          inorder(root->left);
+          printf("%d ", root->key);
+          inorder(root->right);
+      }
+  }
+
+
+  struct Tree* Delete(struct Tree *root, int key){
+    if(root == NULL) return root;
+    else if(key < root->key) root->left = Delete(root->left,key);
+    else if(key > root->key) root->right = Delete(root->right, key);
+    else {
+      // Case 1: No Child
+      if(root->left == NULL && root->right == NULL){
+        delete root;
+        root = NULL;
+      // Case 2: one child
+      } else if(root->left == NULL){
+        struct Tree *temp = root;
+        root = root->right;
+        delete temp;
+      } else if(root->right == NULL){
+        struct Tree *temp = root;
+        root = root->left;
+        delete temp;
+      } else{
+        struct Tree *temp = FindMin(root->right);
+        root->key = temp->key;
+        root->right = Delete(root->right, temp->key);
+      }
+    }
+    return root;
+  }
+
+  Tree* FindMin(Tree* root){
+    while(root->left != NULL) root = root->left;
+    return root;
+  }
+
+  Tree* Insert(Tree *root, char key){
+  if(root == NULL){
+    root = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);;
+    root->key = key;
+    root->left = root->right = NULL;
+  } else if(key <= root->key){
+    root->left = Insert(root->left, key);
+  } else {
+    root->right = Insert(root->right, key);
+  }
+  return root;
+}
+
+
+
+
+
+
+void removeNode(Tree* &node) {
+  Tree* current;
+  Tree* trailing;
+  Tree* temp;
+
+  if (node == nullptr) {
+    std::cout << "Can not remove from empty tree (1)" << std::endl;
+  } else if (node->left == nullptr && node->right == nullptr) {
+    std::cout << "Case 1: Both Childs are Empty" << std::endl;
+    temp = node;
+    node = nullptr;
+    delete temp;
+  } else if (node->left == nullptr) {
+    std::cout << "Case 2a: Left Child is Empty" << std::endl;
+    temp = node;
+    node = node->right;
+    delete temp;
+  } else if (node->right==nullptr) {
+  std::cout << "Case 2b: Right Child is Empty" << std::endl;
+    temp = node;
+    node = node->left;
+    delete temp;
+  } else {
+    std::cout << "Case 3: Both Childs are Non Empty" << std::endl;
+    current = node->left;
+    trailing = nullptr;
+
+    while (current->right != nullptr) {
+      trailing=current;
+      current = current->right;
+    }
+
+    node->key = current->key;
+    if(trailing == nullptr)
+      node->left = current->left;
+    else
+      trailing->right = current->left;
+
+    delete current;
+  }
+}
+
+
+void removeNodeByKey(Tree* root, int key) {
+  Tree* current;
+  Tree* trailCurrent;
+  bool found = false;
+
+  if (root == nullptr) {
+    std::cout << "No cookie for you" << std::endl;
+  } else {
+    current = root;
+    while (current != nullptr && !found) {
+      if (current->key == key) {
+        found = true;
+      } else {
+        trailCurrent = current;
+        if (key < current->key)
+          current = current->left;
+        else
+          current = current->right;
+      }
+    }
+
+    if(current == nullptr) {
+      std::cout << "Node to be deleted is not in tree"<<std::endl;
+    } else if(found) {
+      if(current==root)
+        removeNode(root);
+      else
+        if(key < trailCurrent->key)
+          removeNode(trailCurrent->left);
+        else
+          removeNode(trailCurrent->right);
+    }
+  }
+}
+
+
+
 
 }

@@ -49,6 +49,8 @@ namespace Libtree {
   };
 
 
+
+
   void showItem(Tree* tree);
 
   void preOrderLeft(Tree* tree);   // Root -> left  -> right
@@ -97,4 +99,22 @@ namespace Libtree {
   void printMaxPathRight(Tree* root);
   void printMaxPathNodes(Tree* root);
 
+  //minway
+  int getMinPathLength(Tree* root);
+  int minLengthPathFromNode(Tree* root);
+
+  //maxway
+  int getMaxPathUtil(Tree* root, int &res);
+  Tree* getMaxSumAndRoot(Tree* root, int &res);
+
+  struct Tree* deleteNode(struct Tree* root, int key);
+  void inorder(struct Tree* root);
+
+  struct Tree* Delete(struct Tree *root, int key);
+  Tree* FindMin(Tree* root);
+  Tree* Insert(Tree *root, char key);
+
+  void removeNode(Tree* &p);
+  void removeNodeByKey(Tree* root, int item);
+  // Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
 }
