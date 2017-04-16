@@ -62,41 +62,35 @@ int main() {
   int maxsum = INT_MIN;
   subtreeRoot = getMaxSumAndRoot(root, maxsum);
 
-  // std::cout << root->key << '\n';
-  // std::cout << root->value << '\n';
-  // std::cout << root->height << '\n';
-  // std::cout << root->weight << '\n';
-
   std::cout << "Max path sum:  " << maxsum << '\n';
   std::cout << "Max path root: " << subtreeRoot->key << '\n';
 
+  printTree(root, 1);
 
-  // root = removeNodeByKeyLeft(root, subtreeRoot->key);
+  Tree* copied = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
+  copied = copyTree(root, copied);
 
-  // root = deleteNode(root, subtreeRoot->key);
+  copied = getCenterOfTree(copied);
+
+  // remove center and root of max path
+  inorder(root);
+  std::cout << '\n';
+
+  if (compareNodes(copied, subtreeRoot)) {
+    std::cout << "center and root max path is one element, just delete." << '\n';
+    removeNodeByKey(root, subtreeRoot->key);
+  } else {
+    removeNodeByKey(root, copied->key);
+    removeNodeByKey(root, subtreeRoot->key);
+  }
 
   inorder(root);
-  // BST_Erase(root, subtreeRoot->key);
-  removeNodeByKey(root, subtreeRoot->key);
   std::cout << '\n';
-  inorder(root);
-  std::cout << '\n';
-
-  // root = Delete(root, 2);
-
 
   printTree(root, 1);
 
-  // Node* root = NULL;
-  // root = Insert(root, 5);
-  // root = Insert(root, 10);
-  // root = Insert(root, 3);
-  // root = Insert(root, 4);
-  // root = Insert(root, 1);
-  // root = Insert(root, 11);
-
-  std::cout << "/* message1 */" << '\n';
-  // printTree(subtreeRoot, 1);
+  std::cout << "amount of lists: " << getNodeAmount(copied) << '\n';
+  std::cout << "center: " << copied->key << '\n';
 
   int stop;
   cin >> stop;

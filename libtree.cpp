@@ -584,6 +584,7 @@ struct Tree* minValueNode(struct Tree* node)
           printf("%d ", root->key);
           inorder(root->right);
       }
+
   }
 
 
@@ -713,6 +714,82 @@ void removeNodeByKey(Tree* root, int key) {
           removeNode(trailCurrent->right);
     }
   }
+}
+
+
+/**
+ 1. find start list
+ 2. find maximum second list
+ 3. compare results for all lists
+ 4. save node that have radius
+*/
+
+Tree* copyTree(Tree* node, Tree* newNode) {
+  if (node != nullptr) {
+    newNode = new Tree(node->value, node->key, node->weight, node->depth, node->height, node->left, node->right);
+    newNode->left  = copyTree(node->left,  newNode->left);
+    newNode->right = copyTree(node->right, newNode->right);
+    return newNode;
+  } else {
+    return nullptr;
+  }
+}
+
+Tree* getCenterOfTree(Tree* node) {
+  while (getNodeAmount(node) > 2) {
+    removeLists(node);
+  }
+  if ((node->left != nullptr) && (node->right == nullptr)) return node->left;
+  if ((node->left == nullptr) && (node->right != nullptr)) return node->right;
+
+  // else
+  return node;
+}
+
+int isList(Tree* node) {
+  // if left child is list
+  if (node->left == nullptr && node->right == nullptr)
+    return 1;
+  else
+    return 0;
+
+}
+
+void removeLists(Tree* node) {
+  // std::cout << "is list left: " << isList(node->left) << '\n';
+  if (node->left != nullptr && !isList(node->left))
+    removeLists(node->left);
+  else
+    node->left = nullptr;
+
+  if (node->right != nullptr && !isList(node->right))
+    removeLists(node->right);
+  else
+    node->right = nullptr;
+
+}
+
+int getNodeAmount(Tree* node) {
+  int nodeAmount = 0;
+  if (node != nullptr) {
+    nodeAmount += getNodeAmount(node->right) + getNodeAmount(node->left) + 1;
+  }
+  // std::cout << "amount: " << nodeAmount << '\n';
+  return nodeAmount;
+}
+
+
+int compareNodes(Tree* source, Tree* newest) {
+  if (
+      source->value == newest->value
+      && source->key == newest->key
+      && source->weight == newest->weight
+      && source->depth == newest->depth
+      && source->height == newest->height) {
+        return 1;
+      } else {
+        return 0;
+      }
 }
 
 

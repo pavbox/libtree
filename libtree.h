@@ -116,5 +116,11 @@ namespace Libtree {
 
   void removeNode(Tree* &p);
   void removeNodeByKey(Tree* root, int item);
+  Tree* copyTree(Tree* node, Tree* newNode);
+
+  int getNodeAmount(Tree* node);
+  Tree* getCenterOfTree(Tree* node);
+  void removeLists(Tree* node);
+  int compareNodes(Tree* source, Tree* newest);
   // Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
 }
