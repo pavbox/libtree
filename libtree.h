@@ -59,7 +59,10 @@ namespace Libtree {
   void postOrderRight(Tree* node); // right -> left  -> Root
   void inOrderLeft(Tree* node);    // left  -> Root -> right
   void inOrderRight(Tree* node);   // right -> Root -> left
-  void printTree(Tree* root, int offset);
+  void printTree(Tree* node, int offset);
+
+
+  void buildBalancedTree(Tree* node, int height);
 
   // FrontOrderLeftPosition
   // CopyFullTree
@@ -67,10 +70,10 @@ namespace Libtree {
   // .PrintLevel
 
   // methods
-  int getNodeHeight(Tree* tree);
-  int setNodeHeight(Tree* tree);
+  int getNodeHeight(Tree* node);
+  int setNodeHeight(Tree* node);
 
-  Tree* insertKeyToSubtree(Tree* root, int key);
+  Tree* insertKeyToSubtree(Tree* node, int key);
   void updateTreeNodes(Tree* node, int depth, int weight);
 
   Tree* findMinNodeByKey(Tree* node); // ???
@@ -79,25 +82,27 @@ namespace Libtree {
   Tree* removeMinNode(Tree* node); // remove list
   Tree* removeMaxNode(Tree* node); // remove list
 
+  // ????? remove?
   Tree* removeNodeByKeyRight(Tree* node, int key);
   Tree* removeNodeByKeyLeft(Tree* node, int key);
 
   int getChildsAmount(Tree* node);
 
   // building Tree by array.
-  Tree* buildTree(Tree* tree, int value);
+  Tree* buildTree(Tree* node, int value);
   // building balanced tree with program filling.
-  void buildBalancedTree(Tree* tree, int height);
 
-  int getMaxPathAvg(Tree* root);
-  int getMaxPathFromNode(Tree* root);
+  int getMaxPathAvg(Tree* node);
+  int getMaxPathUtil(Tree* node);
+  int getMaxPathFromNode(Tree* node);
 
-  Tree* compareNodesMaxPath(Tree* root, int maxLength, int rootListSum, Tree* resultRoot);
-  Tree* findMaxPathRoot(Tree* root);
+  // TODO: remove or test and describe
+  Tree* compareNodesMaxPath(Tree* node, int maxLength, int rootListSum, Tree* resultRoot);
+  Tree* findMaxPathRoot(Tree* node);
 
-  void printMaxPathLeft(Tree* root);
-  void printMaxPathRight(Tree* root);
-  void printMaxPathNodes(Tree* root);
+  void printMaxPathLeft(Tree* node); // test: find duplicates
+  void printMaxPathRight(Tree* node);
+  void printMaxPathNodes(Tree* node);
 
   //minway
   int getMinPathLength(Tree* root);
@@ -108,7 +113,6 @@ namespace Libtree {
   Tree* getMaxSumAndRoot(Tree* root, int &res);
 
   struct Tree* deleteNode(struct Tree* root, int key);
-  void inorder(struct Tree* root);
 
   struct Tree* Delete(struct Tree *root, int key);
   Tree* FindMin(Tree* root);

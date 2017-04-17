@@ -102,24 +102,24 @@ namespace Libtree {
    *  Print tree: Graphical Method.
    *  Created by N. Virt.
    */
-  void printTree(Tree* root, int offset) {
+  void printTree(Tree* node, int offset) {
     int i;
-    if (root != nullptr) {
-      printTree(root->left, offset + 1);
+    if (node != nullptr) {
+      printTree(node->left, offset + 1);
 
       for (i = 1; i < offset; i++) std::cout << "--->";
-      printf ("%i   \n", root->key);
+      std::cout << node->key << '\n';
 
-      printTree(root->right, offset + 1);
+      printTree(node->right, offset + 1);
     }
   }
 
 
   /**
    *  Build fully balanced tree with optional height.
-   *  Nodes equals node depth.
+   *  Nodes equals node height.
    */
-  void buildBalancedTree(Tree* tree, int height) {
+  void buildBalancedTree(Tree* node, int height) {
     Tree* newLeftNode;
     Tree* newRightNode;
 
@@ -127,30 +127,36 @@ namespace Libtree {
       newLeftNode  = new Tree(height, height, 0, 0, 0, nullptr, nullptr);
       newRightNode = new Tree(height, height, 0, 0, 0, nullptr, nullptr);
 
-      tree->left  = newLeftNode;
-      tree->right = newRightNode;
+      node->left  = newLeftNode;
+      node->right = newRightNode;
 
-      buildBalancedTree(tree->left,  height - 1);
-      buildBalancedTree(tree->right, height - 1);
+      buildBalancedTree(node->left,  height - 1);
+      buildBalancedTree(node->right, height - 1);
     }
   }
 
 
-  int getNodeHeight(Tree* tree) {
+  /**
+   *  Get height of Node
+   */
+  int getNodeHeight(Tree* node) {
     int result = 0;
-    if (tree != nullptr) {
-      result = tree->height;
+    if (node != nullptr) {
+      result = node->height;
     }
     return result;
   }
 
 
-  int setNodeHeight(Tree* tree) {
+  /**
+   *  Find height of Node and set to object.
+   */
+  int setNodeHeight(Tree* node) {
     int left = 0, right = 0;
 
-    if (tree != nullptr) {
-      left = setNodeHeight(tree->left);
-      right = setNodeHeight(tree->right);
+    if (node != nullptr) {
+      left  = setNodeHeight(node->left);
+      right = setNodeHeight(node->right);
 
       if (left > right) {
         return left + 1;
@@ -163,20 +169,28 @@ namespace Libtree {
   }
 
 
-  Tree* insertKeyToSubtree(Tree* root, int key) {
-    if (root == nullptr) {
-      root = new Tree(key, key, 0, 0, 0, nullptr, nullptr);
+  /**
+   *  Insert new Node to tree (or subtree).
+   *  New node will be is list.
+   */
+  Tree* insertKeyToSubtree(Tree* node, int key) {
+    if (node == nullptr) {
+      node = new Tree(key, key, 0, 0, 0, nullptr, nullptr);
     } else {
-      if (key < root->key)
-        root->left = insertKeyToSubtree(root->left, key);
+      if (key < node->key)
+        node->left = insertKeyToSubtree(node->left, key);
       else
-        root->right = insertKeyToSubtree(root->right, key);
+        node->right = insertKeyToSubtree(node->right, key);
     }
 
-    updateTreeNodes(root, 0, 0);
-    return root;
+    updateTreeNodes(node, 0, 0);
+    return node;
   }
 
+
+  /**
+   *  Updates all params of a nodes of the tree.
+   */
   void updateTreeNodes(Tree* node, int depth, int weight) {
     if (node != nullptr) {
       node->depth = depth;
@@ -189,6 +203,10 @@ namespace Libtree {
   }
 
 
+  /**
+   *  Finds node with minimum key in the tree.
+   *  It's works only for BST (Binary Search Tree)
+   */
   Tree* findMinNodeByKey(Tree* node) {
     if (node->left != nullptr) {
       return findMinNodeByKey(node->left);
@@ -197,6 +215,11 @@ namespace Libtree {
     }
   }
 
+
+  /**
+   *  Finds node with maximum key in the tree.
+   *  It's works only for BST (Binary Search Tree)
+   */
   Tree* findMaxNodeByKey(Tree* node) {
     if (node->right != nullptr) {
       return findMaxNodeByKey(node->right);
@@ -206,7 +229,9 @@ namespace Libtree {
   }
 
 
-
+  /**
+   *  Finds and removes node with minimal key.
+   */
   Tree* removeMinNode(Tree* node) {
     if (node->left == nullptr) {
       return node->right;
@@ -217,6 +242,9 @@ namespace Libtree {
   }
 
 
+  /**
+   *  Finds and removes node with maximal key.
+   */
   Tree* removeMaxNode(Tree* node) {
     if (node->right == nullptr) {
       return node->left;
@@ -227,6 +255,9 @@ namespace Libtree {
   }
 
 
+  /**
+   *  Finds and removes node with maximal key.
+   */
   Tree* removeNodeByKeyRight(Tree* node, int key) {
     Tree* leftSubtree;
     Tree* rightSubtree;
@@ -256,7 +287,6 @@ namespace Libtree {
     else
       return node;
   }
-
 
 
   Tree* removeNodeByKeyLeft(Tree* node, int key) {
@@ -290,6 +320,9 @@ namespace Libtree {
   }
 
 
+  /**
+   *  Gets children count of node.
+   */
   int getChildsAmount(Tree* node) {
     if (node != nullptr) {
       return (1 + getChildsAmount(node->left) + getChildsAmount(node->right));
@@ -301,7 +334,11 @@ namespace Libtree {
 
 
 
-  // building Tree by array.
+
+  /**
+   *  Default function for building the tree.
+   *  Creates Binary Tree.
+   */
   Tree* buildTree(Tree* tree, int value) {
     // Указатель передается по значению
     // соответственно, в контексте выше вызова функции он все еще 0x0 (nullptr)
@@ -317,81 +354,91 @@ namespace Libtree {
   }
 
 
-
-  // 29) Вспомогательная Функция (по одной ветви) вычисления суммы конечных элементов пути максимальной длины,
-  // проходящей через заданный узел
-
-  int getMaxPath(Tree* root) {
-    if ((root->left == nullptr) && (root->right == nullptr)) return root->key;
-    if ((root->left != nullptr) && (root->right == nullptr)) return getMaxPath(root->left);
-    if ((root->left == nullptr) && (root->right != nullptr)) return getMaxPath(root->right);
-    if ((root->left != nullptr) && (root->right != nullptr)) {
+  /**
+   *  Utility function for calculate sum of lists for max path of this node.
+   */
+  int getMaxPathUtil(Tree* node) {
+    if ((node->left == nullptr) && (node->right == nullptr)) return node->key;
+    if ((node->left != nullptr) && (node->right == nullptr)) return getMaxPathUtil(node->left);
+    if ((node->left == nullptr) && (node->right != nullptr)) return getMaxPathUtil(node->right);
+    if ((node->left != nullptr) && (node->right != nullptr)) {
       // check length of a subtrees
-      if ((root->left->height) >= (root->right->height))
-        return getMaxPath(root->left);
+      if ((node->left->height) >= (node->right->height))
+        return getMaxPathUtil(node->left);
       else
-        return getMaxPath(root->right);
+        return getMaxPathUtil(node->right);
     }
   }
 
-  // Основная Функция (по обеим ветвям) вычисления суммы конечных элементов пути
-  // максимальной длины, проходящей через заданный узел
-  // складывает два листа лол
-  int getMaxPathAvg(Tree* root) {
-    int maxLength = 0;
-    if (root != nullptr) {
-      if (root->left != nullptr)
-        maxLength += getMaxPath(root->left);
-      else
-        maxLength += root->key;
 
-      if (root->right != nullptr)
-        maxLength += getMaxPath(root->right);
+  /**
+   *  Calculates sum of lists for max path of this node.
+   *  Calculate only max path lists of this node.
+   */
+  int getMaxPathAvg(Tree* node) {
+    int maxLength = 0;
+    if (node != nullptr) {
+      if (node->left != nullptr)
+        maxLength += getMaxPath(node->left);
       else
-        maxLength += root->key;
+        maxLength += node->key;
+
+      if (node->right != nullptr)
+        maxLength += getMaxPath(node->right);
+      else
+        maxLength += node->key;
     }
     return maxLength;
   }
 
 
-  // Функция определения максимальной длины пути, проходящего через заданный узел
-  int getMaxPathFromNode(Tree* root) {
+  /**
+   *  Gets max path that passing through this node.
+   */
+  int getMaxPathFromNode(Tree* node) {
     int maxLength = 0;
 
-    if (root != nullptr) {
-      if (root->left  != nullptr) maxLength += root->left->height  + 1;
-      if (root->right != nullptr) maxLength += root->right->height + 1;
+    if (node != nullptr) {
+      if (node->left  != nullptr) maxLength += node->left->height  + 1;
+      if (node->right != nullptr) maxLength += node->right->height + 1;
     }
     return maxLength;
   }
 
 
-
-
-
-
-  Tree* findMaxPathRoot(Tree* root) {
+  /**
+   *  Main function for finding max path Root.
+   *  And selects between two max path that,
+   *  which has max sum of key of nodes
+   *  TODO: Test and do somethind (remove or describe).
+   */
+  Tree* findMaxPathRoot(Tree* node) {
     int maxLength = 0;
     int rootListSum = 10000;
     Tree* resultRoot = nullptr;
 
-    resultRoot = compareNodesMaxPath(root, maxLength, rootListSum, resultRoot);
+    resultRoot = compareNodesMaxPath(node, maxLength, rootListSum, resultRoot);
     return resultRoot;
   }
 
-  Tree* compareNodesMaxPath(Tree* root, int maxLength, int rootListSum, Tree* resultRoot) {
-    int tmpLength = 0;
-    if (root != nullptr) {
-      tmpLength = getMaxPathFromNode(root);
 
-      if ((tmpLength > maxLength) || ((tmpLength == maxLength) && (getMaxPathAvg(root) < rootListSum))) {
-        resultRoot = root;
+  /**
+   *  Compares all Max path nodes
+   *  TODO: Test and do somethind (remove or describe).
+   */
+  Tree* compareNodesMaxPath(Tree* node, int maxLength, int rootListSum, Tree* resultRoot) {
+    int tmpLength = 0;
+    if (node != nullptr) {
+      tmpLength = getMaxPathFromNode(node);
+
+      if ((tmpLength > maxLength) || ((tmpLength == maxLength) && (getMaxPathAvg(node) < rootListSum))) {
+        resultRoot = node;
         maxLength = tmpLength;
-        rootListSum = getMaxPathAvg(root);
+        rootListSum = getMaxPathAvg(node);
       }
 
-      compareNodesMaxPath(root->left,  maxLength, rootListSum, resultRoot);
-      compareNodesMaxPath(root->right, maxLength, rootListSum, resultRoot);
+      compareNodesMaxPath(node->left,  maxLength, rootListSum, resultRoot);
+      compareNodesMaxPath(node->right, maxLength, rootListSum, resultRoot);
 
       return resultRoot;
     }
@@ -399,29 +446,32 @@ namespace Libtree {
 
 
 
-
-
-
-  // 33) Вспомогательная процедура (по левой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
-  void printMaxPathLeft(Tree* root) {
-    if ((root->left == nullptr) && (root->right == nullptr)) {
-      std::cout << root->key << ' ';
+  /**
+   *  Utility function for printing all nodes of max path
+   *  of left subtree for this root.
+   */
+  void printMaxPathLeft(Tree* node) {
+    if ((node->left == nullptr) && (node->right == nullptr)) {
+      std::cout << node->key << ' ';
     } else {
-      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathLeft(root->left);
-      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathLeft(root->right);
-      if ((root->left != nullptr) && (root->right != nullptr)) {
-        if (root->left->height >= root->right->height)
-          printMaxPathLeft(root->left);
+      if ((node->left != nullptr) && (node->right == nullptr)) printMaxPathLeft(node->left);
+      if ((node->left == nullptr) && (node->right != nullptr)) printMaxPathLeft(node->right);
+      if ((node->left != nullptr) && (node->right != nullptr)) {
+        if (node->left->height >= node->right->height)
+          printMaxPathLeft(node->left);
         else
-          printMaxPathLeft(root->right);
+          printMaxPathLeft(node->right);
       }
 
-      std::cout << root->key << ' ';
+      std::cout << node->key << ' ';
     }
   }
 
 
-  // 34) Вспомогательная процедура (по правой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+  /**
+   *  Utility function for printing all nodes of max path
+   *  of right subtree for this root.
+   */
   void printMaxPathRight(Tree* root) {
     if ((root->left == nullptr) && (root->right == nullptr)) {
       std::cout << root->key << ' ';
@@ -435,12 +485,14 @@ namespace Libtree {
         else
           printMaxPathRight(root->right);
       }
-
-
     }
   }
 
-  // 35) Основная процедура(по обеим ветвям) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+
+  /**
+   *  Prints all nodes of max path for this root.
+   *  Print method: in-order left.
+   */
   void printMaxPathNodes(Tree* root) {
     if (root != nullptr) {
       if (root->left != nullptr) printMaxPathLeft(root->left);
@@ -452,38 +504,37 @@ namespace Libtree {
 
 
 
-
   /**
-   *
-  */
-
-  // 13) ОСНОВНАЯ Функция определения МИНИМАЛЬНОЙ длины пути, проходящего через заданный узел
+   *  Gets minimal length value for this root of the tree.
+   */
   int getMinPathLength(Tree* root) {
     int minLength = 0;
 
     if (root != nullptr) {
-      if (root->left  != nullptr) minLength += minLengthPathFromNode(root->left)  + 1;
-      if (root->right != nullptr) minLength += minLengthPathFromNode(root->right) + 1;
+      if (root->left  != nullptr) minLength += getMinPathLengthUtil(root->left)  + 1;
+      if (root->right != nullptr) minLength += getMinPathLengthUtil(root->right) + 1;
     }
 
     return minLength;
   }
 
 
-
-  // 14) ВСПОМОГАТЕЛЬНАЯ Функция определения МИНИМАЛЬНОЙ длины пути, проходящего через заданный узел
-  int minLengthPathFromNode(Tree* root) {
+  /**
+   *  Utility function for calculate minimum length
+   *  for this node.
+   */
+  int getMinPathLengthUtil(Tree* root) {
     int minLength = 0;
     if (root != nullptr) {
       if ((root->left != nullptr) && (root->right != nullptr)) {
         if (root->left->height < root->right->height)
-        minLength += minLengthPathFromNode(root->left)  + 1;
+        minLength += getMinPathLengthUtil(root->left)  + 1;
         else
-        minLength += minLengthPathFromNode(root->right) + 1;
+        minLength += getMinPathLengthUtil(root->right) + 1;
       }
 
-      if ((root->left != nullptr) && (root->right == nullptr)) minLength += minLengthPathFromNode(root->left)  + 1;
-      if ((root->left == nullptr) && (root->right != nullptr)) minLength += minLengthPathFromNode(root->right) + 1;
+      if ((root->left != nullptr) && (root->right == nullptr)) minLength += getMinPathLengthUtil(root->left)  + 1;
+      if ((root->left == nullptr) && (root->right != nullptr)) minLength += getMinPathLengthUtil(root->right) + 1;
     }
 
     return minLength;
