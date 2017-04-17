@@ -11,73 +11,97 @@
 #include "libtree.h"
 
 namespace Libtree {
+
   /**
-   * Create Tree structure.
+   * Shows node key
    */
-
-
-  void showItem(Tree* tree) {
-    std::cout << tree->value << " ";
+  void showItem(Tree* node) {
+    std::cout << node->value << " ";
   }
 
-  void preOrderLeft(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      showItem(tree);
-      preOrderLeft(tree->left);
-      preOrderLeft(tree->right);
-    }
-  }
 
-  void preOrderRight(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      showItem(tree);
-      preOrderRight(tree->right);
-      preOrderRight(tree->left);
-    }
-  }
-
-  void postOrderLeft(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      postOrderLeft(tree->left);
-      postOrderLeft(tree->right);
-      showItem(tree);
-    }
-  }
-
-  void postOrderRight(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      postOrderRight(tree->right);
-      postOrderRight(tree->left);
-      showItem(tree);
+  /**
+   *  Print tree: pre-order left method
+   */
+  void preOrderLeft(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      showItem(node);
+      preOrderLeft(node->left);
+      preOrderLeft(node->right);
     }
   }
 
 
-  void inOrderLeft(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      inOrderLeft(tree->left);
-      showItem(tree);
-      inOrderLeft(tree->right);
-    }
-  }
-
-  void inOrderRight(Tree* tree) {
-    if (tree != nullptr) {
-      std::cout << "Items: ";
-      inOrderRight(tree->right);
-      showItem(tree);
-      inOrderRight(tree->left);
+  /**
+   *  Print tree: pre-order right method
+   */
+  void preOrderRight(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      showItem(node);
+      preOrderRight(node->right);
+      preOrderRight(node->left);
     }
   }
 
 
+  /**
+   *  Print tree: post-order left method
+   */
+  void postOrderLeft(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      postOrderLeft(node->left);
+      postOrderLeft(node->right);
+      showItem(node);
+    }
+  }
 
-  // N. Virt - print tree
+
+  /**
+   *  Print tree: post-order right method
+   */
+  void postOrderRight(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      postOrderRight(node->right);
+      postOrderRight(node->left);
+      showItem(node);
+    }
+  }
+
+
+  /**
+   *  Print tree: in-order left method
+   */
+  void inOrderLeft(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      inOrderLeft(node->left);
+      showItem(node);
+      inOrderLeft(node->right);
+    }
+  }
+
+
+  /**
+   *  Print tree: in-order right method
+   */
+  void inOrderRight(Tree* node) {
+    if (node != nullptr) {
+      std::cout << "Nodes: ";
+      inOrderRight(node->right);
+      showItem(node);
+      inOrderRight(node->left);
+    }
+  }
+
+
+  /**
+   *  Print tree: Graphical Method.
+   *  Created by N. Virt.
+   */
   void printTree(Tree* root, int offset) {
     int i;
     if (root != nullptr) {
@@ -91,7 +115,10 @@ namespace Libtree {
   }
 
 
-  // build fully balanced tree
+  /**
+   *  Build fully balanced tree with optional height.
+   *  Nodes equals node depth.
+   */
   void buildBalancedTree(Tree* tree, int height) {
     Tree* newLeftNode;
     Tree* newRightNode;
@@ -575,22 +602,9 @@ struct Tree* minValueNode(struct Tree* node)
   }
 
 
-  // A utility function to do inorder traversal of BST
-  void inorder(struct Tree* root)
-  {
-      if (root != NULL)
-      {
-          inorder(root->left);
-          printf("%d ", root->key);
-          inorder(root->right);
-      }
-
-  }
-
-
   struct Tree* Delete(struct Tree *root, int key){
     if(root == NULL) return root;
-    else if(key < root->key) root->left = Delete(root->left,key);
+    else if(key < root->key) root->left  = Delete(root->left,key);
     else if(key > root->key) root->right = Delete(root->right, key);
     else {
       // Case 1: No Child

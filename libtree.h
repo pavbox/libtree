@@ -51,14 +51,14 @@ namespace Libtree {
 
 
 
-  void showItem(Tree* tree);
+  void showItem(Tree* node);
 
-  void preOrderLeft(Tree* tree);   // Root -> left  -> right
-  void preOrderRight(Tree* tree);  // Root -> right -> left
-  void postOrderLeft(Tree* tree);  // left  -> right -> Root
-  void postOrderRight(Tree* tree); // right -> left  -> Root
-  void inOrderLeft(Tree* tree);    // left  -> Root -> right
-  void inOrderRight(Tree* tree);   // right -> Root -> left
+  void preOrderLeft(Tree* node);   // Root -> left  -> right
+  void preOrderRight(Tree* node);  // Root -> right -> left
+  void postOrderLeft(Tree* node);  // left  -> right -> Root
+  void postOrderRight(Tree* node); // right -> left  -> Root
+  void inOrderLeft(Tree* node);    // left  -> Root -> right
+  void inOrderRight(Tree* node);   // right -> Root -> left
   void printTree(Tree* root, int offset);
 
   // FrontOrderLeftPosition

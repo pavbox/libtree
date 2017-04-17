@@ -21,22 +21,17 @@ int main() {
 
   long int value;
 
-  // int defaultValues[9] = { 10, 8, 20, 6, 9, 4, 7, 3, 5 };
   int defaultValues[9] = { 7, 8, 20, 6, 9, 3, 10, 4, 5 };
 
-  // for (size_t idx_i = 0; idx_i < 9; idx_i++) {
-  //   tree = insertKeyToSubtree(tree, defaultValues[idx_i]);
-  // }
 
+
+  // init specific tree
   struct Tree* root = new Tree(10, 10, 0, 0, 0, nullptr, nullptr);
-
-	// struct Node *resultRoot = newNode(0);
 
 	root->left = new Tree(2, 2, 0, 0, 0, nullptr, nullptr);
 	root->right = new Tree(9, 9, 0, 0, 0, nullptr, nullptr);
 	root->left->left = new Tree(21, 21, 0, 0, 0, nullptr, nullptr);
 	root->left->right = new Tree(1, 1, 0, 0, 0, nullptr, nullptr);
-
 
 	root->left->left->left = new Tree(7, 7, 0, 0, 0, nullptr, nullptr);
   root->left->left->left->right = new Tree(1, 1, 0, 0, 0, nullptr, nullptr);
@@ -49,48 +44,54 @@ int main() {
 	root->left->right->right->left = new Tree(4, 4, 0, 0, 0, nullptr, nullptr);
 	root->left->right->right->right = new Tree(3, 3, 0, 0, 0, nullptr, nullptr);
 
-  std::cout << '\n' << '\n';
-  // printTree(tree, 1);
+  // print source tree
+  std::cout << '\n' << "[#] Source tree:" << '\n' << '\n';
   printTree(root, 1);
 
-  // tree = findMaxPathRoot(tree);
 
-  // printMaxPathNodes(tree->left);
-
+  // init default value for subtreeRoot node
   Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
 
+  // get max path sum and root node
   int maxsum = INT_MIN;
   subtreeRoot = getMaxSumAndRoot(root, maxsum);
 
   std::cout << "Max path sum:  " << maxsum << '\n';
   std::cout << "Max path root: " << subtreeRoot->key << '\n';
 
-  printTree(root, 1);
-
+  // init default root of clone tree
   Tree* copied = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
+
+  // copy source tree
   copied = copyTree(root, copied);
 
+  // get cented of clonned tree.
+  // is equals center of source tree
   copied = getCenterOfTree(copied);
 
-  // remove center and root of max path
-  inorder(root);
+  // show center node
+  std::cout << "Center node of max path: " << copied->key << '\n';
+
+  // inorder print of source tree
+  inOrderLeft(root);
   std::cout << '\n';
 
+  // if center element equals tree node -> remove element once
+  // else remove both elements
   if (compareNodes(copied, subtreeRoot)) {
-    std::cout << "center and root max path is one element, just delete." << '\n';
+    std::cout << " [#] -> Center node and root node of max path is one element, just delete." << '\n';
     removeNodeByKey(root, subtreeRoot->key);
   } else {
     removeNodeByKey(root, copied->key);
     removeNodeByKey(root, subtreeRoot->key);
   }
 
-  inorder(root);
+  // inorder print of source tree
+  inOrderLeft(root);
   std::cout << '\n';
 
+  // print result source tree
   printTree(root, 1);
-
-  std::cout << "amount of lists: " << getNodeAmount(copied) << '\n';
-  std::cout << "center: " << copied->key << '\n';
 
   int stop;
   cin >> stop;
