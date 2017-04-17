@@ -90,41 +90,37 @@ namespace Libtree {
 
   // building Tree by array.
   Tree* buildTree(Tree* node, int value);
-  // building balanced tree with program filling.
 
-  int getMaxPathAvg(Tree* node);
-  int getMaxPathUtil(Tree* node);
+  // TODO: need test this 3 functions
+  int getMaxPathListsSum(Tree* node);
+  int getMaxPathListsUtil(Tree* node);
   int getMaxPathFromNode(Tree* node);
 
   // TODO: remove or test and describe
   Tree* compareNodesMaxPath(Tree* node, int maxLength, int rootListSum, Tree* resultRoot);
   Tree* findMaxPathRoot(Tree* node);
 
-  void printMaxPathLeft(Tree* node); // test: find duplicates
-  void printMaxPathRight(Tree* node);
-  void printMaxPathNodes(Tree* node);
+  void printMaxPathLeftUtil(Tree* root);
+  void printMaxPathRightUtil(Tree* root);
+  void printMaxPathNodes(Tree* root);
 
   //minway
   int getMinPathLength(Tree* root);
-  int getMinPathLengthUtil(Tree* root);
+  int getMinPathLengthUtil(Tree* node);
 
   //maxway
-  int getMaxPathUtil(Tree* root, int &res);
+  int getMaxPathUtil(Tree* node, int &res);
   Tree* getMaxSumAndRoot(Tree* root, int &res);
 
-  struct Tree* deleteNode(struct Tree* root, int key);
-
-  struct Tree* Delete(struct Tree *root, int key);
-  Tree* FindMin(Tree* root);
-  Tree* Insert(Tree *root, char key);
-
+  // removing
   void removeNode(Tree* &p);
-  void removeNodeByKey(Tree* root, int item);
-  Tree* copyTree(Tree* node, Tree* newNode);
+  void removeNodeByKey(Tree* node, int item);
 
-  int getNodeAmount(Tree* node);
+  Tree* copyTree(Tree* node, Tree* newNode);
+  int getNodeAmount(Tree* root);
+
   Tree* getCenterOfTree(Tree* node);
   void removeLists(Tree* node);
   int compareNodes(Tree* source, Tree* newest);
-  // Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
+
 }

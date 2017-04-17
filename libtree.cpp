@@ -251,7 +251,7 @@ namespace Libtree {
 
 
   /**
-   *  Finds and removes node with maximal key.
+   *  Removes node by key by right-remove
    */
   Tree* removeNodeByKeyRight(Tree* node, int key) {
     Tree* leftSubtree;
@@ -260,8 +260,8 @@ namespace Libtree {
 
     if (node == nullptr) return nullptr;
 
-    if (key < node->key) node->left = removeNodeByKeyRight(node->left, key);
-    if (key > node->key) node->left = removeNodeByKeyRight(node->left, key);
+    if (key < node->key) node->left  = removeNodeByKeyRight(node->left,  key);
+    if (key > node->key) node->right = removeNodeByKeyRight(node->right, key);
     if (key == node->key) {
       leftSubtree = node->left;
       rightSubtree = node->right;
@@ -284,6 +284,9 @@ namespace Libtree {
   }
 
 
+  /**
+   *  Removes node by key by left-remove
+   */
   Tree* removeNodeByKeyLeft(Tree* node, int key) {
     Tree* leftSubtree;
     Tree* rightSubtree;
@@ -291,8 +294,8 @@ namespace Libtree {
 
     if (node == nullptr) return nullptr;
 
-    if (key < node->key) node->left = removeNodeByKeyLeft(node->left, key);
-    if (key > node->key) node->left = removeNodeByKeyLeft(node->left, key);
+    if (key < node->key) node->left  = removeNodeByKeyLeft(node->left,  key);
+    if (key > node->key) node->right = removeNodeByKeyLeft(node->right, key);
     if (key == node->key) {
       leftSubtree = node->left;
       rightSubtree = node->right;
@@ -352,34 +355,34 @@ namespace Libtree {
   /**
    *  Utility function for calculate sum of lists for max path of this node.
    */
-  int getMaxPathUtil(Tree* node) {
+  int getMaxPathListsUtil(Tree* node) {
     if ((node->left == nullptr) && (node->right == nullptr)) return node->key;
-    if ((node->left != nullptr) && (node->right == nullptr)) return getMaxPathUtil(node->left);
-    if ((node->left == nullptr) && (node->right != nullptr)) return getMaxPathUtil(node->right);
+    if ((node->left != nullptr) && (node->right == nullptr)) return getMaxPathListsUtil(node->left);
+    if ((node->left == nullptr) && (node->right != nullptr)) return getMaxPathListsUtil(node->right);
     if ((node->left != nullptr) && (node->right != nullptr)) {
       // check length of a subtrees
       if ((node->left->height) >= (node->right->height))
-        return getMaxPathUtil(node->left);
+        return getMaxPathListsUtil(node->left);
       else
-        return getMaxPathUtil(node->right);
+        return getMaxPathListsUtil(node->right);
     }
   }
 
 
   /**
    *  Calculates sum of lists for max path of this node.
-   *  Calculate only max path lists of this node.
+   *  Calculate only max path lists (!) of this node.
    */
-  int getMaxPathAvg(Tree* node) {
+  int getMaxPathListsSum(Tree* node) {
     int maxLength = 0;
     if (node != nullptr) {
       if (node->left != nullptr)
-        maxLength += getMaxPathUtil(node->left);
+        maxLength += getMaxPathListsUtil(node->left);
       else
         maxLength += node->key;
 
       if (node->right != nullptr)
-        maxLength += getMaxPathUtil(node->right);
+        maxLength += getMaxPathListsUtil(node->right);
       else
         maxLength += node->key;
     }
@@ -418,18 +421,18 @@ namespace Libtree {
 
 
   /**
-   *  Compares all Max path nodes
-   *  TODO: Test and do somethind (remove or describe).
+   *  Compares all nodes of max path.
+   *  TODO: Test and do something (remove or describe).
    */
   Tree* compareNodesMaxPath(Tree* node, int maxLength, int rootListSum, Tree* resultRoot) {
     int tmpLength = 0;
     if (node != nullptr) {
       tmpLength = getMaxPathFromNode(node);
 
-      if ((tmpLength > maxLength) || ((tmpLength == maxLength) && (getMaxPathAvg(node) < rootListSum))) {
+      if ((tmpLength > maxLength) || ((tmpLength == maxLength) && (getMaxPathListsSum(node) < rootListSum))) {
         resultRoot = node;
         maxLength = tmpLength;
-        rootListSum = getMaxPathAvg(node);
+        rootListSum = getMaxPathListsSum(node);
       }
 
       compareNodesMaxPath(node->left,  maxLength, rootListSum, resultRoot);
@@ -445,20 +448,20 @@ namespace Libtree {
    *  Utility function for printing all nodes of max path
    *  of left subtree for this root.
    */
-  void printMaxPathLeft(Tree* node) {
-    if ((node->left == nullptr) && (node->right == nullptr)) {
-      std::cout << node->key << ' ';
+  void printMaxPathLeftUtil(Tree* root) {
+    if ((root->left == nullptr) && (root->right == nullptr)) {
+      std::cout << root->key << ' ';
     } else {
-      if ((node->left != nullptr) && (node->right == nullptr)) printMaxPathLeft(node->left);
-      if ((node->left == nullptr) && (node->right != nullptr)) printMaxPathLeft(node->right);
-      if ((node->left != nullptr) && (node->right != nullptr)) {
-        if (node->left->height >= node->right->height)
-          printMaxPathLeft(node->left);
+      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathLeftUtil(root->left);
+      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathLeftUtil(root->right);
+      if ((root->left != nullptr) && (root->right != nullptr)) {
+        if (root->left->height >= root->right->height)
+          printMaxPathLeftUtil(root->left);
         else
-          printMaxPathLeft(node->right);
+          printMaxPathLeftUtil(root->right);
       }
 
-      std::cout << node->key << ' ';
+      std::cout << root->key << ' ';
     }
   }
 
@@ -467,18 +470,18 @@ namespace Libtree {
    *  Utility function for printing all nodes of max path
    *  of right subtree for this root.
    */
-  void printMaxPathRight(Tree* root) {
+  void printMaxPathRightUtil(Tree* root) {
     if ((root->left == nullptr) && (root->right == nullptr)) {
       std::cout << root->key << ' ';
     } else {
       std::cout << root->key << ' ';
-      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathRight(root->left);
-      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathRight(root->right);
+      if ((root->left != nullptr) && (root->right == nullptr)) printMaxPathRightUtil(root->left);
+      if ((root->left == nullptr) && (root->right != nullptr)) printMaxPathRightUtil(root->right);
       if ((root->left != nullptr) && (root->right != nullptr)) {
         if (root->left->height >= root->right->height)
-          printMaxPathRight(root->left);
+          printMaxPathRightUtil(root->left);
         else
-          printMaxPathRight(root->right);
+          printMaxPathRightUtil(root->right);
       }
     }
   }
@@ -490,9 +493,9 @@ namespace Libtree {
    */
   void printMaxPathNodes(Tree* root) {
     if (root != nullptr) {
-      if (root->left != nullptr) printMaxPathLeft(root->left);
+      if (root->left != nullptr) printMaxPathLeftUtil(root->left);
       std::cout << root->key << ' ';
-      if (root->right != nullptr) printMaxPathRight(root->right);
+      if (root->right != nullptr) printMaxPathRightUtil(root->right);
     }
     std::cout << '\n';
   }
@@ -518,18 +521,18 @@ namespace Libtree {
    *  Utility function for calculate minimum length
    *  for this node.
    */
-  int getMinPathLengthUtil(Tree* root) {
+  int getMinPathLengthUtil(Tree* node) {
     int minLength = 0;
-    if (root != nullptr) {
-      if ((root->left != nullptr) && (root->right != nullptr)) {
-        if (root->left->height < root->right->height)
-        minLength += getMinPathLengthUtil(root->left)  + 1;
+    if (node != nullptr) {
+      if ((node->left != nullptr) && (node->right != nullptr)) {
+        if (node->left->height < node->right->height)
+        minLength += getMinPathLengthUtil(node->left)  + 1;
         else
-        minLength += getMinPathLengthUtil(root->right) + 1;
+        minLength += getMinPathLengthUtil(node->right) + 1;
       }
 
-      if ((root->left != nullptr) && (root->right == nullptr)) minLength += getMinPathLengthUtil(root->left)  + 1;
-      if ((root->left == nullptr) && (root->right != nullptr)) minLength += getMinPathLengthUtil(root->right) + 1;
+      if ((node->left != nullptr) && (node->right == nullptr)) minLength += getMinPathLengthUtil(node->left)  + 1;
+      if ((node->left == nullptr) && (node->right != nullptr)) minLength += getMinPathLengthUtil(node->right) + 1;
     }
 
     return minLength;
@@ -544,31 +547,31 @@ namespace Libtree {
    *  This function returns overall maximum path sum in 'res'
    *  And returns max path sum going through root.
    */
-  int getMaxPathUtil(Tree* root, int &res) {
+  int getMaxPathUtil(Tree* node, int &res) {
     //Base Case
-    if (root == nullptr)
+    if (node == nullptr)
       return 0;
 
     // leftChildSum and rightChildSum store maximum path sum going through left and
-    // right child of root respectively
-    int leftChildSum  = getMaxPathUtil(root->left,  res);
-    int rightChildSum = getMaxPathUtil(root->right, res);
+    // right child of node respectively
+    int leftChildSum  = getMaxPathUtil(node->left,  res);
+    int rightChildSum = getMaxPathUtil(node->right, res);
 
-    // Max path for parent call of root. This path must
-    // include at-most one child of root
-    int max_single = std::max(std::max(leftChildSum, rightChildSum) + root->key, root->key);
+    // Max path for parent call of node. This path must
+    // include at-most one child of node
+    int max_single = std::max(std::max(leftChildSum, rightChildSum) + node->key, node->key);
 
     // Max Top represents the sum when the Node under
-    // consideration is the root of the maxsum path and no
-    // ancestors of root are there in max sum path
-    int max_top = std::max(max_single, leftChildSum + rightChildSum + root->key);
+    // consideration is the node of the maxsum path and no
+    // ancestors of node are there in max sum path
+    int max_top = std::max(max_single, leftChildSum + rightChildSum + node->key);
 
     res = std::max(res, max_top); // Store the Maximum Result.
 
-    // save last root of maximum path subtree
+    // save last node of maximum path subtree
     if (res <= max_top) {
-  	    subtreeRoot = root;
-        // std::cout << "path root changed to: " << subtreeRoot->key << '\n';
+  	    subtreeRoot = node;
+        // std::cout << "path node changed to: " << subtreeRoot->key << '\n';
   	}
     return max_single;
   }
@@ -604,21 +607,25 @@ namespace Libtree {
 
     if (node == nullptr) {
       std::cout << "Can not remove from empty tree (1)" << std::endl;
+
     } else if (node->left == nullptr && node->right == nullptr) {
       std::cout << "Case 1: Both Childs are Empty" << std::endl;
-      temp = node;
       node = nullptr;
+      temp = node;
       delete temp;
+
     } else if (node->left == nullptr) {
       std::cout << "Case 2a: Left Child is Empty" << std::endl;
-      temp = node;
       node = node->right;
+      temp = node;
       delete temp;
+
     } else if (node->right==nullptr) {
       std::cout << "Case 2b: Right Child is Empty" << std::endl;
-      temp = node;
       node = node->left;
+      temp = node;
       delete temp;
+
     } else {
       std::cout << "Case 3: Both Childs are Non Empty" << std::endl;
       current = node->left;
@@ -630,6 +637,7 @@ namespace Libtree {
       }
 
       node->key = current->key;
+
       if (trailing == nullptr)
         node->left = current->left;
       else
@@ -643,15 +651,15 @@ namespace Libtree {
   /**
    *  Finds relevant node by key and remove his.
    */
-  void removeNodeByKey(Tree* root, int key) {
+  void removeNodeByKey(Tree* node, int key) {
     Tree* current;
     Tree* trailCurrent;
     bool found = false;
 
-    if (root == nullptr) {
+    if (node == nullptr) {
       std::cout << "No cookie for you" << std::endl;
     } else {
-      current = root;
+      current = node;
       while (current != nullptr && !found) {
         if (current->key == key) {
           found = true;
@@ -667,8 +675,8 @@ namespace Libtree {
       if (current == nullptr) {
         std::cout << "Node to be deleted is not in tree"<<std::endl;
       } else if (found) {
-        if (current == root)
-          removeNode(root);
+        if (current == node)
+          removeNode(node);
         else
           if(key < trailCurrent->key)
             removeNode(trailCurrent->left);
@@ -748,10 +756,10 @@ namespace Libtree {
   /**
    *  Returns count of nodes for root of tree.
    */
-  int getNodeAmount(Tree* node) {
+  int getNodeAmount(Tree* root) {
     int nodeAmount = 0;
-    if (node != nullptr) {
-      nodeAmount += getNodeAmount(node->right) + getNodeAmount(node->left) + 1;
+    if (root != nullptr) {
+      nodeAmount += getNodeAmount(root->right) + getNodeAmount(root->left) + 1;
     }
 
     return nodeAmount;
