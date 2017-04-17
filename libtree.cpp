@@ -25,7 +25,6 @@ namespace Libtree {
    */
   void preOrderLeft(Tree* node) {
     if (node != nullptr) {
-      std::cout << "Nodes: ";
       showItem(node);
       preOrderLeft(node->left);
       preOrderLeft(node->right);
@@ -38,7 +37,6 @@ namespace Libtree {
    */
   void preOrderRight(Tree* node) {
     if (node != nullptr) {
-      std::cout << "Nodes: ";
       showItem(node);
       preOrderRight(node->right);
       preOrderRight(node->left);
@@ -64,7 +62,6 @@ namespace Libtree {
    */
   void postOrderRight(Tree* node) {
     if (node != nullptr) {
-      std::cout << "Nodes: ";
       postOrderRight(node->right);
       postOrderRight(node->left);
       showItem(node);
@@ -77,7 +74,6 @@ namespace Libtree {
    */
   void inOrderLeft(Tree* node) {
     if (node != nullptr) {
-      std::cout << "Nodes: ";
       inOrderLeft(node->left);
       showItem(node);
       inOrderLeft(node->right);
@@ -90,7 +86,6 @@ namespace Libtree {
    */
   void inOrderRight(Tree* node) {
     if (node != nullptr) {
-      std::cout << "Nodes: ";
       inOrderRight(node->right);
       showItem(node);
       inOrderRight(node->left);
@@ -379,12 +374,12 @@ namespace Libtree {
     int maxLength = 0;
     if (node != nullptr) {
       if (node->left != nullptr)
-        maxLength += getMaxPath(node->left);
+        maxLength += getMaxPathUtil(node->left);
       else
         maxLength += node->key;
 
       if (node->right != nullptr)
-        maxLength += getMaxPath(node->right);
+        maxLength += getMaxPathUtil(node->right);
       else
         maxLength += node->key;
     }
@@ -541,17 +536,17 @@ namespace Libtree {
   }
 
 
-
-  // maximum
-
-
-  // This function returns overall maximum path sum in 'res'
-  // And returns max path sum going through root.
-
+  // init global variable in this namespace
+  // with default value
   Tree* subtreeRoot = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);
+
+  /**
+   *  This function returns overall maximum path sum in 'res'
+   *  And returns max path sum going through root.
+   */
   int getMaxPathUtil(Tree* root, int &res) {
     //Base Case
-    if (root == NULL)
+    if (root == nullptr)
       return 0;
 
     // leftChildSum and rightChildSum store maximum path sum going through left and
@@ -569,16 +564,19 @@ namespace Libtree {
     int max_top = std::max(max_single, leftChildSum + rightChildSum + root->key);
 
     res = std::max(res, max_top); // Store the Maximum Result.
-    // if ((max(l, r) + root->key) > root->key)
+
+    // save last root of maximum path subtree
     if (res <= max_top) {
   	    subtreeRoot = root;
-        std::cout << "path root changed to: " << subtreeRoot->key << '\n';
+        // std::cout << "path root changed to: " << subtreeRoot->key << '\n';
   	}
     return max_single;
   }
 
 
-  // Returns maximum path sum in tree with given root
+  /**
+   *  Returns maximum path sum in tree with given root
+   */
   Tree* getMaxSumAndRoot(Tree* root, int &res) {
     // Initialize result
     res = INT_MIN;
@@ -589,263 +587,182 @@ namespace Libtree {
     return subtreeRoot;
   }
 
-  /* Given a non-empty binary search tree, return the node with minimum
-   key value found in that tree. Note that the entire tree does not
-   need to be searched. */
-struct Tree* minValueNode(struct Tree* node)
-{
-    struct Tree* current = node;
-
-    /* loop down to find the leftmost leaf */
-    while (current->left != NULL)
-        current = current->left;
-
-    return current;
-}
-  /* Given a binary search tree and a key, this function deletes the key
-   and returns the new root */
-  struct Tree* deleteNode(struct Tree* root, int key)
-  {
-      // base case
-      if (root == NULL) return root;
 
 
-      // If the key to be deleted is smaller than the root's key,
-      // then it lies in left subtree
-      if (key < root->key)
-          root->left = deleteNode(root->left, key);
 
-      // If the key to be deleted is greater than the root's key,
-      // then it lies in right subtree
-      else if (key > root->key)
-          root->right = deleteNode(root->right, key);
+  /**
+   *  Removes node with 3 cases.
+   *  Case 1 : remove list (both childs are empty)
+   *  Case 2a: remove node with one child (left child is empty)
+   *  Case 2b: remove node with one child (right child is empty)
+   *  Case 3 : remove node with two childs (both childs are non-empty)
+   */
+  void removeNode(Tree* &node) {
+    Tree* current;
+    Tree* trailing;
+    Tree* temp;
 
-      // if key is same as root's key, then This is the node
-      // to be deleted
-      else {
-          // node with only one child or no child
-          if (root->left == NULL)
-          {
-              struct Tree* temp = root->right;
-              std::cout << "delete: " << root->key << '\n';
-              free(root);
-              return temp;
-          }
-          else if (root->right == NULL)
-          {
-              struct Tree* temp = root->left;
-              std::cout << "delete: " << root->key << '\n';
-              free(root);
-              return temp;
-          }
+    if (node == nullptr) {
+      std::cout << "Can not remove from empty tree (1)" << std::endl;
+    } else if (node->left == nullptr && node->right == nullptr) {
+      std::cout << "Case 1: Both Childs are Empty" << std::endl;
+      temp = node;
+      node = nullptr;
+      delete temp;
+    } else if (node->left == nullptr) {
+      std::cout << "Case 2a: Left Child is Empty" << std::endl;
+      temp = node;
+      node = node->right;
+      delete temp;
+    } else if (node->right==nullptr) {
+      std::cout << "Case 2b: Right Child is Empty" << std::endl;
+      temp = node;
+      node = node->left;
+      delete temp;
+    } else {
+      std::cout << "Case 3: Both Childs are Non Empty" << std::endl;
+      current = node->left;
+      trailing = nullptr;
 
-          // node with two children: Get the inorder successor (smallest
-          // in the right subtree)
-          struct Tree* temp = minValueNode(root->right);
-
-          // Copy the inorder successor's content to this node
-          root->key = temp->key;
-
-          // Delete the inorder successor
-          root->right = deleteNode(root->right, temp->key);
+      while (current->right != nullptr) {
+        trailing = current;
+        current = current->right;
       }
-      return root;
-  }
 
-
-  struct Tree* Delete(struct Tree *root, int key){
-    if(root == NULL) return root;
-    else if(key < root->key) root->left  = Delete(root->left,key);
-    else if(key > root->key) root->right = Delete(root->right, key);
-    else {
-      // Case 1: No Child
-      if(root->left == NULL && root->right == NULL){
-        delete root;
-        root = NULL;
-      // Case 2: one child
-      } else if(root->left == NULL){
-        struct Tree *temp = root;
-        root = root->right;
-        delete temp;
-      } else if(root->right == NULL){
-        struct Tree *temp = root;
-        root = root->left;
-        delete temp;
-      } else{
-        struct Tree *temp = FindMin(root->right);
-        root->key = temp->key;
-        root->right = Delete(root->right, temp->key);
-      }
-    }
-    return root;
-  }
-
-  Tree* FindMin(Tree* root){
-    while(root->left != NULL) root = root->left;
-    return root;
-  }
-
-  Tree* Insert(Tree *root, char key){
-  if(root == NULL){
-    root = new Tree(0, 0, 0, 0, 0, nullptr, nullptr);;
-    root->key = key;
-    root->left = root->right = NULL;
-  } else if(key <= root->key){
-    root->left = Insert(root->left, key);
-  } else {
-    root->right = Insert(root->right, key);
-  }
-  return root;
-}
-
-
-
-
-
-
-void removeNode(Tree* &node) {
-  Tree* current;
-  Tree* trailing;
-  Tree* temp;
-
-  if (node == nullptr) {
-    std::cout << "Can not remove from empty tree (1)" << std::endl;
-  } else if (node->left == nullptr && node->right == nullptr) {
-    std::cout << "Case 1: Both Childs are Empty" << std::endl;
-    temp = node;
-    node = nullptr;
-    delete temp;
-  } else if (node->left == nullptr) {
-    std::cout << "Case 2a: Left Child is Empty" << std::endl;
-    temp = node;
-    node = node->right;
-    delete temp;
-  } else if (node->right==nullptr) {
-  std::cout << "Case 2b: Right Child is Empty" << std::endl;
-    temp = node;
-    node = node->left;
-    delete temp;
-  } else {
-    std::cout << "Case 3: Both Childs are Non Empty" << std::endl;
-    current = node->left;
-    trailing = nullptr;
-
-    while (current->right != nullptr) {
-      trailing=current;
-      current = current->right;
-    }
-
-    node->key = current->key;
-    if(trailing == nullptr)
-      node->left = current->left;
-    else
-      trailing->right = current->left;
-
-    delete current;
-  }
-}
-
-
-void removeNodeByKey(Tree* root, int key) {
-  Tree* current;
-  Tree* trailCurrent;
-  bool found = false;
-
-  if (root == nullptr) {
-    std::cout << "No cookie for you" << std::endl;
-  } else {
-    current = root;
-    while (current != nullptr && !found) {
-      if (current->key == key) {
-        found = true;
-      } else {
-        trailCurrent = current;
-        if (key < current->key)
-          current = current->left;
-        else
-          current = current->right;
-      }
-    }
-
-    if(current == nullptr) {
-      std::cout << "Node to be deleted is not in tree"<<std::endl;
-    } else if(found) {
-      if(current==root)
-        removeNode(root);
+      node->key = current->key;
+      if (trailing == nullptr)
+        node->left = current->left;
       else
-        if(key < trailCurrent->key)
-          removeNode(trailCurrent->left);
-        else
-          removeNode(trailCurrent->right);
+        trailing->right = current->left;
+
+      delete current;
     }
   }
-}
 
 
-/**
- 1. find start list
- 2. find maximum second list
- 3. compare results for all lists
- 4. save node that have radius
-*/
+  /**
+   *  Finds relevant node by key and remove his.
+   */
+  void removeNodeByKey(Tree* root, int key) {
+    Tree* current;
+    Tree* trailCurrent;
+    bool found = false;
 
-Tree* copyTree(Tree* node, Tree* newNode) {
-  if (node != nullptr) {
-    newNode = new Tree(node->value, node->key, node->weight, node->depth, node->height, node->left, node->right);
-    newNode->left  = copyTree(node->left,  newNode->left);
-    newNode->right = copyTree(node->right, newNode->right);
-    return newNode;
-  } else {
-    return nullptr;
+    if (root == nullptr) {
+      std::cout << "No cookie for you" << std::endl;
+    } else {
+      current = root;
+      while (current != nullptr && !found) {
+        if (current->key == key) {
+          found = true;
+        } else {
+          trailCurrent = current;
+          if (key < current->key)
+          current = current->left;
+          else
+          current = current->right;
+        }
+      }
+
+      if (current == nullptr) {
+        std::cout << "Node to be deleted is not in tree"<<std::endl;
+      } else if (found) {
+        if (current == root)
+          removeNode(root);
+        else
+          if(key < trailCurrent->key)
+            removeNode(trailCurrent->left);
+          else
+            removeNode(trailCurrent->right);
+      }
+    }
   }
-}
 
-Tree* getCenterOfTree(Tree* node) {
-  while (getNodeAmount(node) > 2) {
-    removeLists(node);
+
+  /**
+   *  Copies source tree to new tree.
+   */
+  Tree* copyTree(Tree* node, Tree* newNode) {
+    if (node != nullptr) {
+      newNode = new Tree(node->value, node->key, node->weight, node->depth, node->height, node->left, node->right);
+      newNode->left  = copyTree(node->left,  newNode->left);
+      newNode->right = copyTree(node->right, newNode->right);
+      return newNode;
+    } else {
+      return nullptr;
+    }
   }
-  if ((node->left != nullptr) && (node->right == nullptr)) return node->left;
-  if ((node->left == nullptr) && (node->right != nullptr)) return node->right;
 
-  // else
-  return node;
-}
 
-int isList(Tree* node) {
-  // if left child is list
-  if (node->left == nullptr && node->right == nullptr)
-    return 1;
-  else
-    return 0;
+  /**
+   *  Gets center node (vertex) of a tree.
+   *  Center of graph is vertex that
+   *  have minimal eccentricity (it's equals radius of a tree)
+   *  -
+   *  i.e. function gets node frim which you can find the radius of a tree.
+   */
+  Tree* getCenterOfTree(Tree* node) {
+    // Removes lists layer by layer
+    // until node count of the tree not equals 2.
+    // Last list in this tree will be the center vertex
+    while (getNodeAmount(node) > 2) {
+      removeLists(node);
+    }
+    if ((node->left != nullptr) && (node->right == nullptr)) return node->left;
+    if ((node->left == nullptr) && (node->right != nullptr)) return node->right;
 
-}
-
-void removeLists(Tree* node) {
-  // std::cout << "is list left: " << isList(node->left) << '\n';
-  if (node->left != nullptr && !isList(node->left))
-    removeLists(node->left);
-  else
-    node->left = nullptr;
-
-  if (node->right != nullptr && !isList(node->right))
-    removeLists(node->right);
-  else
-    node->right = nullptr;
-
-}
-
-int getNodeAmount(Tree* node) {
-  int nodeAmount = 0;
-  if (node != nullptr) {
-    nodeAmount += getNodeAmount(node->right) + getNodeAmount(node->left) + 1;
+    // else
+    return node;
   }
-  // std::cout << "amount: " << nodeAmount << '\n';
-  return nodeAmount;
-}
 
 
-int compareNodes(Tree* source, Tree* newest) {
-  if (
+  /**
+   *  Returns true if node is list.
+   */
+  int isList(Tree* node) {
+    // if left child is list
+    if (node->left == nullptr && node->right == nullptr)
+      return 1;
+    else
+      return 0;
+  }
+
+
+  /**
+   *  Removes all lists of the tree.
+   */
+  void removeLists(Tree* node) {
+    if (node->left != nullptr && !isList(node->left))
+      removeLists(node->left);
+    else
+      node->left = nullptr;
+
+    if (node->right != nullptr && !isList(node->right))
+      removeLists(node->right);
+    else
+      node->right = nullptr;
+
+  }
+
+
+  /**
+   *  Returns count of nodes for root of tree.
+   */
+  int getNodeAmount(Tree* node) {
+    int nodeAmount = 0;
+    if (node != nullptr) {
+      nodeAmount += getNodeAmount(node->right) + getNodeAmount(node->left) + 1;
+    }
+
+    return nodeAmount;
+  }
+
+
+  /**
+   *  Compares two nodes.
+   */
+  int compareNodes(Tree* source, Tree* newest) {
+    if (
       source->value == newest->value
       && source->key == newest->key
       && source->weight == newest->weight
@@ -855,9 +772,6 @@ int compareNodes(Tree* source, Tree* newest) {
       } else {
         return 0;
       }
-}
-
-
-
+    }
 
 }

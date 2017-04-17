@@ -106,7 +106,7 @@ namespace Libtree {
 
   //minway
   int getMinPathLength(Tree* root);
-  int minLengthPathFromNode(Tree* root);
+  int getMinPathLengthUtil(Tree* root);
 
   //maxway
   int getMaxPathUtil(Tree* root, int &res);
